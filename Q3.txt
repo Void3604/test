@@ -1,0 +1,39 @@
+
+1. Plugins:
+Install: Git, GitHub, (optional) GitHub Branch Source
+
+2. Create Job:
+
+New Item → Freestyle → student-portal-site → OK
+
+SCM → Git: add repo URL
+https://github.com/YOUR_USERNAME/student-portal.git
+
+Build Trigger: check “GitHub hook trigger for GITScm polling”
+
+Build Step → Execute shell:
+echo "Building student-portal"
+ls -la
+echo "Contents of index.html:"
+sed -n '1,80p' index.html
+save
+
+3. GitHub Webhook:
+Repo → Settings → Webhooks → Add webhook
+
+URL: http://<JENKINS_HOST>/github-webhook/
+
+Type: application/json
+
+Event: Just push event
+
+4. Test Change:
+
+git checkout -b tiny-update
+sed -i "s/Event Registration/Event Registration - Updated/" index.html
+git add index.html
+git commit -m "Tiny update"
+git push -u origin tiny-update
+git checkout main
+git merge tiny-update
+git push origin main
