@@ -1,0 +1,28 @@
+Create service-nodeport.yaml:
+apiVersion: v1
+kind: Service
+metadata:
+  name: student-portal-nodeport
+spec:
+  type: NodePort
+  selector:
+    app: student-portal
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+      nodePort: 30080   # optional; if omitted, Kubernetes picks a port in 30000-32767
+Apply service:
+kubectl apply -f service-nodeport.yaml
+kubectl get svc student-portal-nodeport
+Find node IP (for a single-node cluster, use the node's IP; for minikube you can use minikube ip):
+kubectl get nodes -o wide
+Access service:
+curl http://192.168.1.100:30080 | head -n 10
+Scale deployment to 3 replicas:
+kubectl scale deployment student-portal-deploy --replicas=3
+kubectl get pods -l app=student-portal
+Expected outputs:
+$ kubectl get pods
+$ curl http://192.168.1.100:30080
+<!doctype html>...
